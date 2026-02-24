@@ -1,6 +1,9 @@
 {
   "name": "node-sea-poc",
   "version": "0.1.0",
+  "scripts": {
+    "build": "node ./scripts/build.mjs ./src/get-pkg.config.mjs"
+  },
   "devDependencies": {
     "@types/node": "^25"
   },
