@@ -20,11 +20,6 @@ if (process.platform === "darwin") {
   const sign = child_process.spawnSync("codesign", ["--sign", "-", configOut.output], { stdio: "inherit" });
   inheritChildExit(sign); // macOS executables MUST be signed
 }
-if (process.platform === "win32") {
-  const sign = child_process.spawnSync("signtool", ["sign", "/fd", "SHA256", configOut.output], { stdio: "inherit" });
-  inheritChildExit(sign);
-  process.exitCode = 0; // windows executables MAY be signed (but at least we tried)
-}
 
 /**
  * see: {@link https://nodejs.org/docs/v25.6.1/api/single-executable-applications.html#generating-single-executable-applications-with---build-sea | Generating single executable applications with `--build-sea`}
