@@ -63,7 +63,7 @@ function createConfig(configIn) {
     .update(`${configOut.main}\n${configOut.output}`)
     .digest("hex");
 
-  const outFile = path.join(path.dirname(packageJsonPath), ".sea", `sea-config-${hash}.json`);
+  const outFile = path.join(path.dirname(packageJsonPath), "dist", `sea-config-${hash}.json`);
   const outDir = path.dirname(outFile);
 
   fs.mkdirSync(outDir, { recursive: true });
