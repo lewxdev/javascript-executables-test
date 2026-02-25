@@ -1,21 +1,9 @@
 {
   "tasks": {
-    "build": "deno run --allow-run scripts/build.ts"
+    "build": "deno run --allow-run scripts/build.js"
   },
   "imports": {
     "@std/fs": "jsr:@std/fs@^1.0.23",
     "@std/path": "jsr:@std/path@^1.1.4"
-  },
-
-  // devEngines not yet supported but added for reference
-  "devEngines": {
-    "packageManager": {
-      "name": "deno",
-      "version": "2.6.10"
-    },
-    "runtime": {
-      "name": "deno",
-      "version": "2.6.10"
-    }
   }
 }

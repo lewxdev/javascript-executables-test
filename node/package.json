@@ -1,11 +1,9 @@
 {
   "name": "node",
   "version": "0.1.0",
+  "private": true,
   "scripts": {
     "build": "node ./scripts/build.mjs ./src/get-pkg.config.mjs"
-  },
-  "devDependencies": {
-    "@types/node": "^25"
   },
   "devEngines": {
     "packageManager": {
@@ -16,6 +14,5 @@
       "name": "node",
       "version": "25.6.1"
     }
-  },
-  "private": true
+  }
 }

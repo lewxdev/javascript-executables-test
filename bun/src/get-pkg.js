@@ -1,8 +1,9 @@
-import console from "node:console";
-import path from "node:path";
+import console from 'node:console';
+import path from 'node:path';
 
-async function getPackageJson(currentDirectory = process.cwd()) {
-  const file = Bun.file(path.join(currentDirectory, "package.json"));
+async function getPackageJson (currentDirectory) {
+  currentDirectory = currentDirectory || process.cwd();
+  const file = Bun.file(path.join(currentDirectory, 'package.json'));
   if (await file.exists()) {
     return file;
   }
@@ -15,7 +16,7 @@ async function getPackageJson(currentDirectory = process.cwd()) {
 
 const packageJson = await getPackageJson();
 if (!packageJson) {
-  console.error("error: cannot find package.json");
+  console.error('error: cannot find package.json');
   process.exit(1);
 }
 
