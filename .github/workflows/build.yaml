@@ -6,6 +6,37 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-deno:
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-pc-windows-msvc
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+          - x86_64-unknown-linux-gnu
+          - aarch64-unknown-linux-gnu
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: deno/
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: denoland/setup-deno@v2
+        with:
+          cache: true
+          deno-version: 2.6.10
+
+      - run: deno task build ${{ matrix.target }}
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: deno-${{ matrix.target }}
+          path: deno/dist/
+          if-no-files-found: error
+
   build-node:
     strategy:
       fail-fast: false

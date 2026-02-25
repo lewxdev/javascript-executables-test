@@ -1,4 +1,4 @@
-.PHONY: install-bun install-deno install-node install build-node build
+.PHONY: install-bun install-deno install-node install build-deno build-node build
 
 install-bun:
 	bun install --cwd bun
@@ -11,7 +11,10 @@ install-node:
 
 install: install-bun install-deno install-node
 
+build-deno:
+	deno task --cwd deno build
+
 build-node:
 	npm --prefix node run build
 
-build: build-node
+build: build-deno build-node
