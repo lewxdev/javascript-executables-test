@@ -1,24 +1,25 @@
 import assert from "node:assert";
-import child_process from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import module from "node:module";
 import path from "node:path";
 import process from "node:process";
-import url from "node:url";
+import { $ } from "./shell.mjs";
 
-const configUrl = url.pathToFileURL(path.resolve(process.argv[2]));
-const { default: configIn } = await import(configUrl.href);
-const { configFile, configOut } = createConfig(configIn);
+const { configFile, configOut } = createConfig({
+  main: "./src/get-pkg.cjs",
+  output: "./dist/node/get-pkg",
+  disableExperimentalSEAWarning: true,
+  useCodeCache: true, // the drawbacks of cache are os-dependent, building with CI mitigates this
+  execArgv: ["--no-warnings"],
+});
 
 // build executable
-const build = child_process.spawnSync(process.execPath, ["--build-sea", configFile], { stdio: "inherit" });
-inheritChildExit(build);
+$("node", "--build-sea", configFile);
 
-// attempt signing
+// sign macOS executables
 if (process.platform === "darwin") {
-  const sign = child_process.spawnSync("codesign", ["--sign", "-", configOut.output], { stdio: "inherit" });
-  inheritChildExit(sign); // macOS executables MUST be signed
+  $("codesign", "--sign", "-", configOut.output);
 }
 
 /**
@@ -63,26 +64,11 @@ function createConfig(configIn) {
     .update(`${configOut.main}\n${configOut.output}`)
     .digest("hex");
 
-  const outFile = path.join(path.dirname(packageJsonPath), "dist", `sea-config-${hash}.json`);
+  const outFile = path.join(path.dirname(packageJsonPath), "dist", "node", `sea-config-${hash}.json`);
   const outDir = path.dirname(outFile);
 
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(outFile, JSON.stringify(configOut, null, 2));
 
   return { configFile: outFile, configOut };
-}
-
-/**
- * @param {child_process.SpawnSyncReturns<*>} result
- */
-function inheritChildExit(result) {
-  if (result.error) {
-    throw result.error;
-  }
-  if (result.signal) {
-    process.kill(process.pid, result.signal);
-  }
-  if (result.status !== 0) {
-    process.exitCode = result.status;
-  }
 }

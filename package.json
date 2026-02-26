@@ -1,0 +1,43 @@
+{
+  "name": "javascript-executables-test",
+  "version": "0.1.0",
+  "scripts": {
+    "build:bun": "bun run scripts/build.bun.mjs",
+    "build:deno": "deno run -A scripts/build.deno.mjs",
+    "build:node": "node scripts/build.node.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^25"
+  },
+  "devEngines": {
+    "packageManager": [
+      {
+        "name": "bun",
+        "version": "1.3.9"
+      },
+      {
+        "name": "deno",
+        "version": "2.6.10"
+      },
+      {
+        "name": "npm",
+        "version": "11.9.0"
+      }
+    ],
+    "runtime": [
+      {
+        "name": "bun",
+        "version": "1.3.9"
+      },
+      {
+        "name": "deno",
+        "version": "2.6.10"
+      },
+      {
+        "name": "node",
+        "version": "25.6.1"
+      }
+    ]
+  },
+  "private": true
+}

@@ -4,6 +4,6 @@
     "target": "esnext",
     "module": "nodenext",
     "checkJs": true,
-    "strict": true,
+    "strict": true
   }
 }
