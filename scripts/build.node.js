@@ -4,6 +4,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import esbuild from "esbuild";
 
 const entrypoint = process.argv[2];
 
@@ -13,15 +14,36 @@ if (!entrypoint) {
 }
 
 const filename = path.basename(entrypoint, path.extname(entrypoint));
-const outfile = process.platform === "win32"
+const builtEntrypoint = `dist/node/${filename}.js`;
+const builtExecutable = process.platform === "win32"
   ? `dist/node/${filename}.exe`
   : `dist/node/${filename}`;
 
+const build = esbuild.buildSync({
+  entryPoints: [entrypoint],
+  outfile: builtEntrypoint,
+  bundle: true,
+  platform: "node",
+  format: "esm",
+  target: "node25",
+  banner: {
+    js: `import { createRequire as createRequireFromModule } from "node:module";
+const require = createRequireFromModule(import.meta.url);`,
+  },
+});
+
+if (build.errors.length) {
+  for (const error of build.errors) {
+    console.error("error:", error.text);
+  }
+  process.exit(1);
+}
+
 /** @type {Config} */
 const config = {
-  main: path.resolve(entrypoint),
+  main: path.resolve(builtEntrypoint),
   mainFormat: "module",
-  output: path.resolve(outfile),
+  output: path.resolve(builtExecutable),
   disableExperimentalSEAWarning: true,
   execArgv: ["--no-warnings"],
 }

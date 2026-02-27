@@ -1,10 +1,9 @@
 import console from "node:console";
 import path from "node:path";
 import process from "node:process";
-import { promises as timers } from "node:timers";
+import timers from "node:timers/promises";
 import util from "node:util";
 import ora from "ora";
-import { fetch } from "undici";
 
 const { positionals: [url], values: options } = util.parseArgs({
   allowPositionals: true,
@@ -22,7 +21,7 @@ if (!url || !URL.canParse(url) || options.delay && !/\d+/.test(options.delay)) {
 }
 
 const spinner = ora(`GET ${url}`).start();
-const text = await fetch(url).then((response) => response.text());
+const text = await globalThis.fetch(url).then((response) => response.text());
 
 if (options.delay) {
   await timers.scheduler.wait(Number.parseInt(options.delay));

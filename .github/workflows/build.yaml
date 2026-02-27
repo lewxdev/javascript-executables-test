@@ -76,6 +76,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        source:
+          - get
+          - get-pkg
         os:
           - macos-latest
           - windows-latest
@@ -88,7 +91,7 @@ jobs:
         with:
           node-version: 25.7.0
 
-      - run: node --run build:get-pkg:node
+      - run: node --run build:${{ matrix.source }}:node
 
       - uses: actions/upload-artifact@v6
         with:
