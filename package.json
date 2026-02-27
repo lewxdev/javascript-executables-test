@@ -4,7 +4,13 @@
   "scripts": {
     "build:get-pkg:bun": "bun run scripts/build.bun.js src/get-pkg.js",
     "build:get-pkg:deno": "deno run -A scripts/build.deno.js src/get-pkg.js",
-    "build:get-pkg:node": "node scripts/build.node.js src/get-pkg.js"
+    "build:get-pkg:node": "node scripts/build.node.js src/get-pkg.js",
+    "build:get:bun": "bun run scripts/build.bun.js src/get.js",
+    "build:get:deno": "deno run -A scripts/build.deno.js src/get.js"
+  },
+  "dependencies": {
+    "ora": "^9.3.0",
+    "undici": "^7.22.0"
   },
   "devDependencies": {
     "@types/node": "^25"
