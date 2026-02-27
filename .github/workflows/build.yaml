@@ -35,7 +35,7 @@ jobs:
 
       - uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.target }}
+          name: ${{ matrix.target }}-${{ matrix.source }}
           path: dist/bun/
           if-no-files-found: error
 
@@ -67,7 +67,7 @@ jobs:
 
       - uses: actions/upload-artifact@v6
         with:
-          name: deno-${{ matrix.target }}
+          name: deno-${{ matrix.target }}-${{ matrix.source }}
           path: dist/deno/
           if-no-files-found: error
 
@@ -95,6 +95,6 @@ jobs:
 
       - uses: actions/upload-artifact@v6
         with:
-          name: node-${{ matrix.os }}
+          name: node-${{ matrix.os }}-${{ matrix.source }}
           path: dist/node/
           if-no-files-found: error
