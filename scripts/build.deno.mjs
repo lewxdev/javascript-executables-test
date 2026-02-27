@@ -1,12 +1,20 @@
+import child_process from "node:child_process";
+import console from "node:console";
+import path from "node:path";
 import process from "node:process";
-import { $ } from "./shell.mjs";
 
-const target = process.argv[2];
-const targetArgs = target ? ["--target", target] : [];
+const entrypoint = process.argv[2];
+const target = process.argv[3];
 
-$("deno", "compile",
-  "--allow-read",
-  ...targetArgs,
-  "--output", "dist/deno/",
-  "src/get-pkg.cjs",
+if (!entrypoint) {
+  console.error("usage: deno run %s <entrypoint> [target]", path.basename(import.meta.filename));
+  process.exit(1);
+}
+
+child_process.execFileSync(
+  "deno",
+  target
+    ? ["compile", "-A", "--target", target, "--output", "dist/deno/", entrypoint]
+    : ["compile", "-A", "--output", "dist/deno/", entrypoint],
+  { stdio: "inherit" },
 );

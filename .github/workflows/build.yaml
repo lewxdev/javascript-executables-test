@@ -27,7 +27,7 @@ jobs:
         with:
           bun-version: 1.3.9
 
-      - run: bun run build:bun ${{ matrix.target }}
+      - run: bun run build:get-pkg:bun ${{ matrix.target }}
 
       - uses: actions/upload-artifact@v6
         with:
@@ -55,7 +55,7 @@ jobs:
           cache: true
           deno-version: 2.6.10
 
-      - run: deno task build:deno ${{ matrix.target }}
+      - run: deno task build:get-pkg:deno ${{ matrix.target }}
 
       - uses: actions/upload-artifact@v6
         with:
@@ -80,7 +80,7 @@ jobs:
         with:
           node-version: 25.6.1
 
-      - run: node --run build:node
+      - run: node --run build:get-pkg:node
 
       - uses: actions/upload-artifact@v6
         with:

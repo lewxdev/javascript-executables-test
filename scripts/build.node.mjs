@@ -1,25 +1,47 @@
-import assert from "node:assert";
+import child_process from "node:child_process";
+import console from "node:console";
 import crypto from "node:crypto";
 import fs from "node:fs";
-import module from "node:module";
 import path from "node:path";
 import process from "node:process";
-import { $ } from "./shell.mjs";
 
-const { configFile, configOut } = createConfig({
-  main: "./src/get-pkg.cjs",
-  output: "./dist/node/get-pkg",
+const entrypoint = process.argv[2];
+
+if (!entrypoint) {
+  console.error("usage: node %s <entrypoint>", path.basename(import.meta.filename));
+  process.exit(1);
+}
+
+const filename = path.basename(entrypoint, path.extname(entrypoint));
+const outfile = process.platform === "win32"
+  ? `dist/node/${filename}.exe`
+  : `dist/node/${filename}`;
+
+/** @type {Config} */
+const config = {
+  main: path.resolve(entrypoint),
+  executable: process.execPath, // supports building with shimmed executables (nvm, etc.)
+  output: path.resolve(outfile),
   disableExperimentalSEAWarning: true,
-  useCodeCache: true, // the drawbacks of cache are os-dependent, building with CI mitigates this
   execArgv: ["--no-warnings"],
-});
+}
+
+const configHash = crypto
+  .createHash("shake256", { outputLength: 6 })
+  .update(`${config.main}\n${config.output}`)
+  .digest("hex");
+
+const configPath = path.join("dist", "node", `sea-config-${configHash}.json`);
+
+fs.mkdirSync(path.dirname(configPath), { recursive: true });
+fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
 // build executable
-$("node", "--build-sea", configFile);
+child_process.execFileSync("node", ["--build-sea", configPath], { stdio: "inherit" });
 
-// sign macOS executables
+// sign macOS executable
 if (process.platform === "darwin") {
-  $("codesign", "--sign", "-", configOut.output);
+  child_process.execFileSync("codesign", ["--sign", "-", config.output], { stdio: "inherit" });
 }
 
 /**
@@ -35,40 +57,3 @@ if (process.platform === "darwin") {
  * @property {string} [execArgvExtension="env"] (default: `"env"`, options: `"none"`, `"env"`, `"cli"`)
  * @property {Object.<string, string>} [assets]
  */
-
-/**
- * @param {Config} configIn
- * @returns {{ configFile: string, configOut: Config }}
- */
-function createConfig(configIn) {
-  /**
-   * Config with better defaults.
-   * Also acts to minimally validate required properties, delegating proper validation to `--build-sea`
-   * @type {Config}
-   */
-  const configOut = {
-    ...configIn,
-    main: configIn.main,
-    executable: configIn.executable ?? process.execPath, // supports building locally with nvm
-    output: process.platform === "win32" && !configIn.output.endsWith(".exe")
-      ? configIn.output + ".exe"
-      : configIn.output,
-  }
-
-  // build directory is adjacent to the nearest package.json
-  const packageJsonPath = module.findPackageJSON(".", import.meta.url);
-  assert(packageJsonPath, "cannot resolve package.json path");
-
-  const hash = crypto
-    .createHash("shake256", { outputLength: 6 })
-    .update(`${configOut.main}\n${configOut.output}`)
-    .digest("hex");
-
-  const outFile = path.join(path.dirname(packageJsonPath), "dist", "node", `sea-config-${hash}.json`);
-  const outDir = path.dirname(outFile);
-
-  fs.mkdirSync(outDir, { recursive: true });
-  fs.writeFileSync(outFile, JSON.stringify(configOut, null, 2));
-
-  return { configFile: outFile, configOut };
-}
