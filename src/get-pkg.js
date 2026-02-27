@@ -1,7 +1,7 @@
-const console = require("node:console");
-const fs = require("node:fs");
-const path = require("node:path");
-const process = require("node:process");
+import console from "node:console";
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
 
 function getPackageJsonPath(currentDirectory = process.cwd()) {
   const candidatePath = path.join(currentDirectory, "package.json");

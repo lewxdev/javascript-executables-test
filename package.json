@@ -2,9 +2,9 @@
   "name": "javascript-executables-test",
   "version": "0.1.0",
   "scripts": {
-    "build:get-pkg:bun": "bun run scripts/build.bun.mjs src/get-pkg.cjs",
-    "build:get-pkg:deno": "deno run -A scripts/build.deno.mjs src/get-pkg.cjs",
-    "build:get-pkg:node": "node scripts/build.node.mjs src/get-pkg.cjs"
+    "build:get-pkg:bun": "bun run scripts/build.bun.js src/get-pkg.js",
+    "build:get-pkg:deno": "deno run -A scripts/build.deno.js src/get-pkg.js",
+    "build:get-pkg:node": "node scripts/build.node.js src/get-pkg.js"
   },
   "devDependencies": {
     "@types/node": "^25"
@@ -39,5 +39,6 @@
       }
     ]
   },
-  "private": true
+  "private": true,
+  "type": "module"
 }

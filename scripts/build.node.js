@@ -20,7 +20,7 @@ const outfile = process.platform === "win32"
 /** @type {Config} */
 const config = {
   main: path.resolve(entrypoint),
-  executable: process.execPath, // supports building with shimmed executables (nvm, etc.)
+  mainFormat: "module",
   output: path.resolve(outfile),
   disableExperimentalSEAWarning: true,
   execArgv: ["--no-warnings"],
