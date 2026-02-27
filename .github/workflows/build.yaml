@@ -91,6 +91,7 @@ jobs:
         with:
           node-version: 25.7.0
 
+      - run: npm ci
       - run: node --run build:${{ matrix.source }}:node
 
       - uses: actions/upload-artifact@v6
