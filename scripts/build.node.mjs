@@ -45,9 +45,10 @@ if (process.platform === "darwin") {
 }
 
 /**
- * see: {@link https://nodejs.org/docs/v25.6.1/api/single-executable-applications.html#generating-single-executable-applications-with---build-sea | Generating single executable applications with `--build-sea`}
+ * see: {@link https://nodejs.org/docs/v25.7.0/api/single-executable-applications.html#generating-single-executable-applications-with---build-sea | Generating single executable applications with `--build-sea`}
  * @typedef {object} Config
  * @property {string} main (example: `"/path/to/bundled/script.js"`)
+ * @property {string} [mainFormat="commonjs"] (default: `"commonjs"`, options: `"commonjs"`, `"module"`)
  * @property {string} [executable] If not specified, uses the current Node.js binary (example: `"/path/to/node/binary"`)
  * @property {string} output (example: `"/path/to/write/the/generated/executable"`)
  * @property {boolean} [disableExperimentalSEAWarning=false] (default: `false`)
